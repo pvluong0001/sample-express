@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h1>User management - protected page</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% users.forEach((user)=> { %>
+                <tr>
+                    <td>
+                        <%= user.username %>
+                    </td>
+                    <td>
+                        <%= user.email %>
+                    </td>
+                    <td></td>
+                </tr>
+                <% }) %>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3">
+                    <div style="display: flex; justify-content: space-between;">
+                        <div>
+                            <select name="perPage" id="perPage">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                            </select>
+                        </div>
+                        <div>
+                            <span class="previous">Previos</span>
+                            <span class="next">Next</span>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <script>
+        const CONTROLLER = (() => {
+            let page = <%= page %>;
+            let perPage = <%= perPage %>;
+            let total = <%= total %>;
+
+            function renderTable() {
+                window.location.href = `/admin/user-management?perPage=${perPage}&page=${page}`
+            }
+
+            function changePerPageNumber(perPageNew) {
+                // refresh this page with newPerpage number
+                perPage = perPageNew;
+                page = 1;
+                renderTable();
+            }
+
+            function nextPage() {
+                if (page < total) {
+                    page++;
+                    renderTable()
+                }
+                
+            }
+
+            function previousPage() {
+                if (page > 1) {
+                    page--;
+                    renderTable();
+                }
+            }
+
+            function initTableFilter() {
+                document.getElementById("perPage").value = perPage;
+            }
+
+            return {
+                changePerPageNumber, nextPage, previousPage, initTableFilter
+            };
+        })();
+
+        document.getElementById("perPage").addEventListener('change', e => {
+            const perPageNumber = e.target.value;
+
+            CONTROLLER.changePerPageNumber(parseInt(perPageNumber));
+        })
+
+        document.querySelector('.next').addEventListener('click', () => CONTROLLER.nextPage())
+        document.querySelector('.previous').addEventListener('click', () => CONTROLLER.previousPage())
+
+        CONTROLLER.initTableFilter();
+    </script>
+</body>
+
+</html>
