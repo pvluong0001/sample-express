@@ -103,6 +103,11 @@ app.get('/auth/logout', (req, res) => {
     return res.redirect('/auth/login');
 })
 
+// protected page
+app.get('/admin/dashboard', (req, res) => {
+    return res.render('pages/dashboard');
+})
+
 // another protected page
 app.get('/admin/user-management', (req, res) => {
     // render a view
